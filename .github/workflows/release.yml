@@ -1,0 +1,37 @@
+name: Cross-Platform Release
+on:
+    push:
+        tags: ['v*']
+
+jobs:
+    build-and-release:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                include:
+                    - target: bun-linux-x64
+                      os: linux
+                      arch: x64
+                    - target: bun-darwin-arm64
+                      os: macos
+                      arch: arm64
+                    - target: bun-windows-x64
+                      os: windows
+                      arch: x64
+
+        steps:
+            - uses: actions/checkout@v4
+            - uses: oven-sh/setup-bun@v2
+
+            - name: Build Binary
+              run: |
+                  # 出力ファイル名をOSに合わせて調整
+                  OUTFILE="divecrawl-${{ matrix.os }}-${{ matrix.arch }}"
+                  if [ "${{ matrix.os }}" = "windows" ]; then OUTFILE="$OUTFILE.exe"; fi
+                  
+                  bun build --compile --target=${{ matrix.target }} ./index.ts --outfile $OUTFILE
+
+            - name: Upload to GitHub Release
+              uses: softprops/action-gh-release@v2
+              with:
+                  files: divecrawl-*
