@@ -90,12 +90,13 @@ export class LinkChecker {
 
                 for (const link of links) {
                     if (!this.visited.has(link)) {
+                        this.logger.debug(`[QUEUE] add ${link}`)
                         this.queue.push(link);
                     }
                 }
+                await this.options.screenshot(finalUrl, getRes.data);
             }
         } catch (err: any) {
-
             this.logger.error(`エラー (${url}): ${err.message}`);
             this.results.set(url, { url, status: `ERR: ${err.message}`, isExternal: false });
         }
@@ -104,6 +105,9 @@ export class LinkChecker {
     private extractLinks(html: string, baseUrl: string): string[] {
         const $ = cheerio.load(html);
         const discovered: string[] = [];
+        const fileExclusionCheck = (url: URL): boolean =>
+            /\.(png|jpe?g|gif|svg|pdf|zip|gz|exe|docx?|xlsx?|pptx?|mp3|mp4|mov|css|js|txt)$/i.test(url.origin + url.pathname.replace(/\/+$/, ""))
+
         $('a[href]').each((_, el) => {
             const href = $(el).attr('href');
             if (!href) return;
@@ -112,8 +116,7 @@ export class LinkChecker {
                 const abs = new URL(href, baseUrl);
                 abs.hash = ''; // ハッシュ除去
                 const normalized = abs.href;
-
-                if (abs.hostname === this.baseUrl.hostname) {
+                if (abs.hostname === this.baseUrl.hostname && !fileExclusionCheck(new URL(normalized))) {
                     discovered.push(normalized);
                 }
             } catch {

@@ -14,10 +14,13 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@types/puppeteer": "^7.0.4",
     "axios": "^1.13.5",
     "axios-mock-adapter": "^2.1.0",
     "cheerio": "^1.2.0",
     "commander": "^14.0.3",
+    "puppeteer": "^24.37.5",
+    "puppeteer-full-page-screenshot": "^1.2.5",
     "vitest": "^4.0.18",
     "winston": "^3.19.0"
   }

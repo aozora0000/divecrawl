@@ -1,6 +1,7 @@
 export interface CrawlerOptions {
     interval: number;
-    concurrency: number; // 並行処理数を追加
+    concurrency: number;
+    screenshot: (url: string, html: string) => Promise<void>,
 }
 
 export interface CrawlResult {
@@ -8,3 +9,5 @@ export interface CrawlResult {
     status: number | string;
     isExternal: boolean;
 }
+
+declare module 'puppeteer-full-page-screenshot';
