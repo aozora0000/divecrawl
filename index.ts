@@ -46,6 +46,7 @@ program
             });
             config.screenshot = (url: string, html: string) => new Promise(async (resolve) => {
                 const filepath = path.join(
+                    process.cwd(),
                     opts.screenshot,
                     url
                         .replace(/\/+$/, "")
