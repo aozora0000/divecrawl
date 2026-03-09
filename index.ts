@@ -53,7 +53,7 @@ program
                         .replace(/^https?:\/\//, '')
                         .replace(/[\/\\?%*:|"<>]/g, '_') + '.webp'
                 );
-                if(!fs.existsSync(filepath)) {
+                if(fs.existsSync(filepath)) {
                     logger.debug(`[puppeteer] file exists ${filepath}`)
                     return resolve();
                 }

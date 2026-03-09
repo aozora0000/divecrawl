@@ -34,6 +34,8 @@ export class LinkChecker {
                 // ワーカーを追加投入できるか確認
                 while (this.activeWorkers < this.options.concurrency && this.queue.length > 0) {
                     const url = this.queue.shift()!;
+                    if (!url) continue;
+
                     this.activeWorkers++;
 
                     // 非同期で処理を開始（awaitしないのがポイント）
@@ -107,7 +109,6 @@ export class LinkChecker {
         const discovered: string[] = [];
         const fileExclusionCheck = (url: URL): boolean =>
             /\.(png|jpe?g|gif|svg|pdf|zip|gz|exe|docx?|xlsx?|pptx?|mp3|mp4|mov|css|js|txt)$/i.test(url.origin + url.pathname.replace(/\/+$/, ""))
-
         $('a[href]').each((_, el) => {
             const href = $(el).attr('href');
             if (!href) return;
